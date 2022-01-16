@@ -1,18 +1,27 @@
 
 from yahoofinancials import YahooFinancials
 import pandas as pd
+import os.path
 
 # DataFrame Setup
-transaction_columns = ['Date', 'Ticker', 'Type', 'Units',
-                       'Price Per Unit', 'Total Price']
-transaction_df = pd.DataFrame(columns=transaction_columns)
 
-user_input = input(">>>")
+if os.path.exists('user_stock_data.csv'):
+    transaction_df = pd.read_csv('user_stock_data.csv')
+else:
+    transaction_columns = ['Date', 'Ticker', 'Type', 'Units',
+                           'Price Per Unit', 'Total Price']
+    transaction_df = pd.DataFrame(columns=transaction_columns)
+
+user_input = input("1: Edit Transactions list\n"
+                   "2: Stocks Eval\n"
+                   "3: Portfolio Eval\n"
+                   "Type \"Quit\" to quit\n"
+                   ">>> ")
 
 
 while (user_input != "Quit"):
     # TODO #2: output the current trading day data
-    if (user_input == 'Stocks Eval'):
+    if (user_input == '2'):
         tickers = input(
             "Please enter your tickers seperated by a space: ").split()
         yf = YahooFinancials(tickers)
@@ -32,9 +41,10 @@ while (user_input != "Quit"):
         print(df)
 
     # TODO #1:Allow user to enter past transactions and generate dataframes
-    if (user_input == 'Enter Transactions'):
-        while(user_input == 'Enter Transactions'):
-            trans_type = input("Enter transaction type.\n>>> ")
+    # loop that allows user to store all of their past trasactions
+    if (user_input == '1'):
+        while(user_input == '1'):  # TODO #5: Add error checking for user input
+            trans_type = input("Enter transaction type. - Buy or Sell")
             ticker = input("Enter stock ticker\n>>> ")
             units = input("Enter number of units\n>>> ")
             ppu = input("Enter price per unit in USD\n>>> ")  # TODO #4
@@ -45,24 +55,23 @@ while (user_input != "Quit"):
                            'Total Price': total_price}
             print("Confirm Transaction: y/n\n", transaction, "\n")
             choice = input(">>>")
-            if (choice == 'y'):
+            if (choice == 'y'):  # add transaction to end of dataframe
                 transaction_df = transaction_df.append(
                                                 transaction, ignore_index=True)
                 choice = input(
                     "Would you like to enter another transaction: y/n\n")
-                if (choice == 'y'):
-                    user_input = 'Enter Transactions'
+                if (choice == 'y'):  # add another transaction
+                    user_input = '1'
 
-                elif (choice == 'n'):
+                elif (choice == 'n'):  # leave the loop and print current data
                     user_input = '0'
 
-            elif (choice == 'n'):
-                user_input = 'Enter Transactions'
-
+            elif (choice == 'n'):  # user inputs details again
+                user_input = '1'
         print(transaction_df)
+        transaction_df.to_csv('user_stock_data.csv')
 
     # TODO #3:Output evaluation of overall portfolio
-    if (user_input == 'Portfolio Eval'):
+    if (user_input == '3'):
         print("Feature not ready yet\n")
-
     user_input = input(">>> ")

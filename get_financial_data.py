@@ -3,14 +3,15 @@ from yahoofinancials import YahooFinancials
 import pandas as pd
 import os.path
 
-# DataFrame Setup
-
+# Transaction DataFrame Setup
 if os.path.exists('user_stock_data.csv'):
     transaction_df = pd.read_csv('user_stock_data.csv')
+
 else:
     transaction_columns = ['Date', 'Ticker', 'Type', 'Units',
                            'Price Per Unit', 'Total Price']
     transaction_df = pd.DataFrame(columns=transaction_columns)
+
 
 user_input = input("1: Edit Transactions list\n"
                    "2: Stocks Eval\n"
@@ -20,6 +21,10 @@ user_input = input("1: Edit Transactions list\n"
 
 
 while (user_input != "Quit"):
+    if (user_input == '4'):  # purly for testing
+        print(transaction_df)
+        user_input = input(">>> ")
+
     # TODO #2: output the current trading day data
     if (user_input == '2'):
         tickers = input(
@@ -43,8 +48,8 @@ while (user_input != "Quit"):
     # TODO #1:Allow user to enter past transactions and generate dataframes
     # loop that allows user to store all of their past trasactions
     if (user_input == '1'):
-        while(user_input == '1'):  # TODO #5: Add error checking for user input
-            trans_type = input("Enter transaction type. - Buy or Sell")
+        while(user_input == '1'):  # TODO #5 add error checking
+            trans_type = input("Enter transaction type. - Buy or Sell >>> ")
             ticker = input("Enter stock ticker\n>>> ")
             units = input("Enter number of units\n>>> ")
             ppu = input("Enter price per unit in USD\n>>> ")  # TODO #4
@@ -69,7 +74,7 @@ while (user_input != "Quit"):
             elif (choice == 'n'):  # user inputs details again
                 user_input = '1'
         print(transaction_df)
-        transaction_df.to_csv('user_stock_data.csv')
+        transaction_df.to_csv('user_stock_data.csv', index=False)
 
     # TODO #3:Output evaluation of overall portfolio
     if (user_input == '3'):

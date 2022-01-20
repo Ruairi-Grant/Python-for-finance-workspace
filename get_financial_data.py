@@ -3,6 +3,13 @@ from yahoofinancials import YahooFinancials
 import pandas as pd
 import os.path
 
+# Portfolio FataFrame setup
+if os.path.exists('user_portfolio.csv'):
+    portfolio_df = pd.read_csv('user_portfolio.csv')
+else:
+    portfolio_columns = ['Ticker', 'Quantity']
+    portfolio_df = pd.DataFrame(columns=portfolio_columns)
+
 # Transaction DataFrame Setup
 if os.path.exists('user_stock_data.csv'):
     transaction_df = pd.read_csv('user_stock_data.csv')
@@ -46,7 +53,7 @@ while (user_input != "Quit"):
         print(df)
 
     # TODO #1:Allow user to enter past transactions and generate dataframes
-    # loop that allows user to store all of their past trasactions
+    # allows user to enter past transactions and generate portfolio
     if (user_input == '1'):
         while(user_input == '1'):  # TODO #5 add error checking
             trans_type = input("Enter transaction type. - Buy or Sell >>> ")
@@ -60,7 +67,19 @@ while (user_input != "Quit"):
                            'Total Price': total_price}
             print("Confirm Transaction: y/n\n", transaction, "\n")
             choice = input(">>>")
-            if (choice == 'y'):  # add transaction to end of dataframe
+            if (choice == 'y'):
+                # add transaction to end of transaction_df and edit portfolio
+                stock_idx = portfolio_df.index[
+                                            portfolio_df['Ticker'] == ticker
+                                            ].tolist()
+                if not stock_idx:  # add new line to end of portfolio_df
+                    portfolio_df = portfolio_df.append(
+                                                {'Ticker': ticker,
+                                                 'Quantity': units},
+                                                ignore_index=True)
+                else:  # edit current line
+                    portfolio_df.at[stock_idx[0], 'Quantity'] += int(units)  
+
                 transaction_df = transaction_df.append(
                                                 transaction, ignore_index=True)
                 choice = input(
@@ -73,8 +92,12 @@ while (user_input != "Quit"):
 
             elif (choice == 'n'):  # user inputs details again
                 user_input = '1'
+        print("Transactions:")
         print(transaction_df)
+        print("Portfolio:")
+        print(portfolio_df)
         transaction_df.to_csv('user_stock_data.csv', index=False)
+        portfolio_df.to_csv('user_portfolio.csv', index=False)
 
     # TODO #3:Output evaluation of overall portfolio
     if (user_input == '3'):

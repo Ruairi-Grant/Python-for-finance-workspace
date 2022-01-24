@@ -3,7 +3,7 @@ from yahoofinancials import YahooFinancials
 import pandas as pd
 import os.path
 
-# Portfolio FataFrame setup
+# Portfolio DataFrame setup
 if os.path.exists('user_portfolio.csv'):
     portfolio_df = pd.read_csv('user_portfolio.csv')
 else:
@@ -28,9 +28,6 @@ user_input = input("1: Edit Transactions list\n"
 
 
 while (user_input != "Quit"):
-    if (user_input == '4'):  # purly for testing
-        print(transaction_df)
-        user_input = input(">>> ")
 
     # TODO #2: output the current trading day data
     if (user_input == '2'):
@@ -67,7 +64,7 @@ while (user_input != "Quit"):
                            'Total Price': total_price}
             print("Confirm Transaction: y/n\n", transaction, "\n")
             choice = input(">>>")
-            if (choice == 'y'):
+            if (choice == 'y'):  # Add new data to Dataframes
                 # add transaction to end of transaction_df and edit portfolio
                 stock_idx = portfolio_df.index[
                                             portfolio_df['Ticker'] == ticker
@@ -77,8 +74,11 @@ while (user_input != "Quit"):
                                                 {'Ticker': ticker,
                                                  'Quantity': units},
                                                 ignore_index=True)
-                else:  # edit current line
-                    portfolio_df.at[stock_idx[0], 'Quantity'] += int(units)  
+                else:  # edit the entry for this stock in the portfolio
+                    if trans_type == 'Buy':  # user 'Bought' so add
+                        portfolio_df.at[stock_idx[0], 'Quantity'] += int(units)
+                    elif trans_type == 'Sell':  # user 'Sold' so subtract
+                        portfolio_df.at[stock_idx[0], 'Quantity'] -= int(units)
 
                 transaction_df = transaction_df.append(
                                                 transaction, ignore_index=True)
@@ -90,8 +90,9 @@ while (user_input != "Quit"):
                 elif (choice == 'n'):  # leave the loop and print current data
                     user_input = '0'
 
-            elif (choice == 'n'):  # user inputs details again
+            elif (choice == 'n'):  # return to top of editing
                 user_input = '1'
+        # Finished with editing: print data and save
         print("Transactions:")
         print(transaction_df)
         print("Portfolio:")
@@ -102,4 +103,6 @@ while (user_input != "Quit"):
     # TODO #3:Output evaluation of overall portfolio
     if (user_input == '3'):
         print("Feature not ready yet\n")
+
+    # Ask again for user input
     user_input = input(">>> ")

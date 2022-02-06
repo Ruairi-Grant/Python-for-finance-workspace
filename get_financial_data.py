@@ -26,7 +26,7 @@ user_input = input("1: Edit Transactions list\n"
                    "Type \"Quit\" to quit\n"
                    ">>> ")
 
-
+# TODO #8
 while (user_input != "Quit"):
 
     # TODO #2: output the current trading day data
@@ -49,7 +49,7 @@ while (user_input != "Quit"):
             inplace=True)
         print(df)
 
-    # TODO #1:Allow user to enter past transactions and generate dataframes
+    # TODO #1
     # allows user to enter past transactions and generate portfolio
     if (user_input == '1'):
         while(user_input == '1'):  # TODO #5 add error checking

@@ -55,10 +55,10 @@ while (user_input != "Quit"):
         while(user_input == '1'):  # TODO #5 add error checking
             trans_type = input("Enter transaction type. - Buy or Sell >>> ")
             ticker = input("Enter stock ticker\n>>> ")
-            units = input("Enter number of units\n>>> ")
-            ppu = input("Enter price per unit in USD\n>>> ")  # TODO #4
+            units = int(input("Enter number of units\n>>> "))
+            ppu = int(input("Enter price per unit in USD\n>>> "))  # TODO #4
             date = input("Enter trans date in format DD-MM-YYYY\n>>> ")
-            total_price = int(units)*int(ppu)
+            total_price = units*ppu
             transaction = {'Date': date, 'Ticker': ticker, 'Type': trans_type,
                            'Units': units, 'Price Per Unit': ppu,
                            'Total Price': total_price}
@@ -105,4 +105,8 @@ while (user_input != "Quit"):
         print("Feature not ready yet\n")
 
     # Ask again for user input
-    user_input = input(">>> ")
+    user_input = input("1: Edit Transactions list\n"
+                       "2: Stocks Eval\n"
+                       "3: Portfolio Eval\n"
+                       "Type \"Quit\" to quit\n"
+                       ">>> ")

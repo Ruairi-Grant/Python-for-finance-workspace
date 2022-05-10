@@ -1,6 +1,7 @@
 
 from yahoofinancials import YahooFinancials
 import pandas as pd
+import matplotlib.pyplot as plt
 import os.path
 
 # Portfolio DataFrame setup
@@ -102,7 +103,33 @@ while (user_input != "Quit"):
 
     # TODO #3:Output evaluation of overall portfolio
     if (user_input == '3'):
-        print("Feature not ready yet\n")
+        # Output piechart of value for each stock
+        tickers = portfolio_df['Ticker'].tolist()
+        quantity_list = portfolio_df['Quantity'].tolist()
+
+        yf = YahooFinancials(tickers)
+        # set up names
+        standard_data = ["regularMarketPrice"]
+        standard_data_names = ["Current Price"]
+        # get data from Yahoo
+        curr_price = yf.get_stock_price_data()
+        # turn dict into a nicly formatted DataFrame and print
+        yf_data = pd.DataFrame.from_dict(curr_price)
+        yf_data = yf_data.transpose()
+        yf_data = yf_data[standard_data]
+        yf_data.rename(
+            columns=dict(zip(standard_data, standard_data_names)),
+            inplace=True)
+        yf_data = yf_data.reset_index(level=0).rename(columns={'index': 'Ticker'})
+        portfolio_df = portfolio_df.join(yf_data["Current Price"])
+        portfolio_df["Total Value"] = portfolio_df["Quantity"] * portfolio_df["Current Price"]
+        fig1, ax1 = plt.subplots()
+        ax1.pie(portfolio_df["Total Value"], labels=tickers, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+
+        plt.show()
+        print(portfolio_df)
+        
 
     # Ask again for user input
     user_input = input("1: Edit Transactions list\n"
@@ -110,3 +137,12 @@ while (user_input != "Quit"):
                        "3: Portfolio Eval\n"
                        "Type \"Quit\" to quit\n"
                        ">>> ")
+
+
+"""
+        fig1, ax1 = plt.subplots()
+        ax1.pie(quantity_list, labels=tickers, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+
+        plt.show()
+"""

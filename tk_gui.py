@@ -4,6 +4,11 @@ Tutorial for tkinter: https://tkdocs.com/tutorial/firstexample.html
 from tkinter import *
 from tkinter import ttk
 
+from yahoofinancials import YahooFinancials
+import pandas as pd
+import matplotlib.pyplot as plt
+import os.path
+
 
 class StockEval:
 
@@ -16,11 +21,32 @@ class StockEval:
         t.columnconfigure(0, weight=1)
         t.rowconfigure(0, weight=1)
 
-        ticker = StringVar()
-        ticker_entry = ttk.Entry(stockEvalFrame, width=7, textvariable=ticker)
+        self.tickers = StringVar()
+        ticker_entry = ttk.Entry(stockEvalFrame, width=7, textvariable=self.tickers)
         ticker_entry.grid(column=2, row=1, sticky=(W, E))
 
-        ttk.Label(stockEvalFrame, text="feet").grid(column=3, row=1, sticky=W)
+        ttk.Label(stockEvalFrame, text="Enter stock ticker for evaluation:").grid(column=1, row=1, sticky=W)
+
+        ttk.Button(stockEvalFrame, text="Stock Analysis", command=self.getStockData).grid(column=2, row=2, sticky=W)
+
+    def getStockData(self, *args):
+        tickersList = ((self.tickers).get()).split()
+        yf = YahooFinancials(tickersList)
+        # set up names
+        standard_data = ["regularMarketPrice", "regularMarketOpen",
+                         "regularMarketDayHigh", "regularMarketDayLow"]
+        standard_data_names = ["Current Price", "Open", "Close", "Low"]
+        # get data from Yahoo
+        curr_price = yf.get_stock_price_data()
+        # turn dict into a nicly formatted DataFrame and print
+        df = pd.DataFrame.from_dict(curr_price)
+        df = df.transpose()
+        df = df[standard_data]
+        df.rename(
+            columns=dict(zip(standard_data, standard_data_names)),
+            inplace=True)
+
+        print(df) #TODO: Ouput to GUI
 
 
 class PortfolioEval:

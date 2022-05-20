@@ -3,6 +3,7 @@ Tutorial for tkinter: https://tkdocs.com/tutorial/firstexample.html
 """
 from tkinter import *
 from tkinter import ttk
+from pandastable import Table
 
 from yahoofinancials import YahooFinancials
 import pandas as pd
@@ -16,18 +17,18 @@ class StockEval:
         t = Toplevel()
         t.title("Stock Evaluation")
 
-        stockEvalFrame = ttk.Frame(t, padding="3 3 12 12")
-        stockEvalFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.stockEvalFrame = ttk.Frame(t, padding="3 3 12 12")
+        self.stockEvalFrame.grid(column=0, row=0, sticky=(N, W, E, S))
         t.columnconfigure(0, weight=1)
         t.rowconfigure(0, weight=1)
 
         self.tickers = StringVar()
-        ticker_entry = ttk.Entry(stockEvalFrame, width=7, textvariable=self.tickers)
+        ticker_entry = ttk.Entry(self.stockEvalFrame, width=7, textvariable=self.tickers)
         ticker_entry.grid(column=2, row=1, sticky=(W, E))
 
-        ttk.Label(stockEvalFrame, text="Enter stock ticker for evaluation:").grid(column=1, row=1, sticky=W)
+        ttk.Label(self.stockEvalFrame, text="Enter stock ticker for evaluation:").grid(column=1, row=1, sticky=W)
 
-        ttk.Button(stockEvalFrame, text="Stock Analysis", command=self.getStockData).grid(column=2, row=2, sticky=W)
+        ttk.Button(self.stockEvalFrame, text="Stock Analysis", command=self.getStockData).grid(column=2, row=2, sticky=W)
 
     def getStockData(self, *args):
         tickersList = ((self.tickers).get()).split()
@@ -46,7 +47,11 @@ class StockEval:
             columns=dict(zip(standard_data, standard_data_names)),
             inplace=True)
 
-        print(df) #TODO: Ouput to GUI
+        print(df)  # TODO: #9 Ouput to GUI
+
+        pt = Table(self.stockEvalFrame, dataframe=df,
+                   showtoolbar=True, showstatusbar=True)
+        pt.show()
 
 
 class PortfolioEval:

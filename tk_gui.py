@@ -47,10 +47,10 @@ class StockEval:
             columns=dict(zip(standard_data, standard_data_names)),
             inplace=True)
 
-        print(df)  # TODO: #9 Ouput to GUI
-
         pt = Table(self.stockEvalFrame, dataframe=df,
                    showtoolbar=True, showstatusbar=True)
+
+        pt.showIndex()
         pt.show()
 
 
@@ -69,7 +69,7 @@ class PortfolioEval:
         ticker_entry = ttk.Entry(portfolioEvalFrame, width=7, textvariable=ticker)
         ticker_entry.grid(column=2, row=1, sticky=(W, E))
 
-        ttk.Label(portfolioEvalFrame, text="XXX").grid(column=3, row=1, sticky=W)
+        ttk.Label(portfolioEvalFrame, text="Enter Transaction type:").grid(column=1, row=1, sticky=W)
 
 
 class EditTransaction:
@@ -78,17 +78,40 @@ class EditTransaction:
         t = Toplevel()
         t.title("Edit transactions")
 
-        transactionEditFrame = ttk.Frame(t, padding="3 3 12 12")
-        transactionEditFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.transactionEditFrame = ttk.Frame(t, padding="3 3 12 12")
+        self.transactionEditFrame.grid(column=0, row=0, sticky=(N, W, E, S))
         t.columnconfigure(0, weight=1)
         t.rowconfigure(0, weight=1)
 
-        ticker = StringVar()
-        ticker_entry = ttk.Entry(transactionEditFrame, width=7, textvariable=ticker)
-        ticker_entry.grid(column=2, row=1, sticky=(W, E))
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction type:").grid(column=1, row=1, sticky=W)
+        self.transType = StringVar()
+        typeEntry = OptionMenu(self.transactionEditFrame, self.transType, "Buy", "Sell")
+        typeEntry.grid(column=2, row=1, sticky=(W, E))
 
-        ttk.Label(transactionEditFrame, text="YYY").grid(column=3, row=1, sticky=W)
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction ticker:").grid(column=1, row=2, sticky=W)
+        self.transTicker = StringVar()
+        typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transTicker)
+        typeEntry.grid(column=2, row=2, sticky=(W, E))
 
+        ttk.Label(self.transactionEditFrame, text="Enter Number of units:").grid(column=1, row=3, sticky=W)
+        self.transUnits = StringVar()
+        typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transUnits)
+        typeEntry.grid(column=2, row=3, sticky=(W, E))
+
+        ttk.Label(self.transactionEditFrame, text="Enter the price per unit:").grid(column=1, row=4, sticky=W)
+        self.transPrice = StringVar()
+        typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transPrice)
+        typeEntry.grid(column=2, row=4, sticky=(W, E))
+
+        ttk.Label(self.transactionEditFrame, text="Enter the data of the transaction:").grid(column=1, row=5, sticky=W)
+        self.transDate = StringVar()
+        typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transDate)
+        typeEntry.grid(column=2, row=5, sticky=(W, E))
+
+        ttk.Button(self.transactionEditFrame, text="Enter transaction", command=self.enterTransaction).grid(column=2, row=6, sticky=W)
+
+    def enterTransaction(self, *args):
+        print(self.transType, self.transTicker, self.transUnits, self.transPrice, self.transDate)
 
 class PortfolioGUI:
 

@@ -83,35 +83,66 @@ class EditTransaction:
         t.columnconfigure(0, weight=1)
         t.rowconfigure(0, weight=1)
 
-        ttk.Label(self.transactionEditFrame, text="Enter Transaction type:").grid(column=1, row=1, sticky=W)
+        # Button Setup
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction type:").pack()
         self.transType = StringVar()
         typeEntry = OptionMenu(self.transactionEditFrame, self.transType, "Buy", "Sell")
-        typeEntry.grid(column=2, row=1, sticky=(W, E))
+        typeEntry.pack()
 
-        ttk.Label(self.transactionEditFrame, text="Enter Transaction ticker:").grid(column=1, row=2, sticky=W)
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction ticker:").pack()
         self.transTicker = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transTicker)
-        typeEntry.grid(column=2, row=2, sticky=(W, E))
+        typeEntry.pack()
 
-        ttk.Label(self.transactionEditFrame, text="Enter Number of units:").grid(column=1, row=3, sticky=W)
+        ttk.Label(self.transactionEditFrame, text="Enter Number of units:").pack()
         self.transUnits = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transUnits)
-        typeEntry.grid(column=2, row=3, sticky=(W, E))
+        typeEntry.pack()
 
-        ttk.Label(self.transactionEditFrame, text="Enter the price per unit:").grid(column=1, row=4, sticky=W)
+        ttk.Label(self.transactionEditFrame, text="Enter the price per unit:").pack()
         self.transPrice = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transPrice)
-        typeEntry.grid(column=2, row=4, sticky=(W, E))
+        typeEntry.pack()
 
-        ttk.Label(self.transactionEditFrame, text="Enter the data of the transaction:").grid(column=1, row=5, sticky=W)
+        ttk.Label(self.transactionEditFrame, text="Enter the data of the transaction:").pack()
         self.transDate = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transDate)
-        typeEntry.grid(column=2, row=5, sticky=(W, E))
+        typeEntry.pack()
 
-        ttk.Button(self.transactionEditFrame, text="Enter transaction", command=self.enterTransaction).grid(column=2, row=6, sticky=W)
+        ttk.Button(self.transactionEditFrame, text="Enter transaction", command=self.enterTransaction).pack()
+        # Dataframe Setup
+        self.transDf = self.getTransDf()
+        self.PortfolioDf = self.getPortfolioDf()
+
+        tableframe = Frame(self.transactionEditFrame)
+        tableframe.pack()
+        pt = Table(tableframe, dataframe=self.transDf,
+                   showtoolbar=True, showstatusbar=True)
+
+        # pt.showIndex()
+        pt.show()
+
+    def getPortfolioDf(self):
+        if os.path.exists('user_portfolio.csv'):
+            portfolio_df = pd.read_csv('user_portfolio.csv')
+        else:
+            portfolio_columns = ['Ticker', 'Quantity']
+            portfolio_df = pd.DataFrame(columns=portfolio_columns)
+        return portfolio_df
+
+    def getTransDf(self):
+        if os.path.exists('user_stock_data.csv'):
+            transaction_df = pd.read_csv('user_stock_data.csv')
+        else:
+            transaction_columns = ['Date', 'Ticker', 'Type', 'Units',
+                                   'Price Per Unit', 'Total Price']
+            transaction_df = pd.DataFrame(columns=transaction_columns)
+        return transaction_df
 
     def enterTransaction(self, *args):
+        
         print(self.transType, self.transTicker, self.transUnits, self.transPrice, self.transDate)
+
 
 class PortfolioGUI:
 
@@ -127,6 +158,23 @@ class PortfolioGUI:
         ttk.Button(mainframe, text="Stock Analysis", command=StockEval).grid(column=1, row=3, sticky=W)
         ttk.Button(mainframe, text="Edit Transactions", command=EditTransaction).grid(column=2, row=3, sticky=W)
         ttk.Button(mainframe, text="Portfolio Analysis", command=PortfolioEval).grid(column=3, row=3, sticky=W)
+
+    def refreshPortfolio(self):
+        # Portfolio DataFrame setup
+        if os.path.exists('user_portfolio.csv'):
+            portfolio_df = pd.read_csv('user_portfolio.csv')
+        else:
+            portfolio_columns = ['Ticker', 'Quantity']
+            portfolio_df = pd.DataFrame(columns=portfolio_columns)
+
+        # Transaction DataFrame Setup
+        if os.path.exists('user_stock_data.csv'):
+            transaction_df = pd.read_csv('user_stock_data.csv')
+
+        else:
+            transaction_columns = ['Date', 'Ticker', 'Type', 'Units',
+                                   'Price Per Unit', 'Total Price']
+            transaction_df = pd.DataFrame(columns=transaction_columns)
 
 
 root = Tk()

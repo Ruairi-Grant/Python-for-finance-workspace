@@ -84,43 +84,41 @@ class EditTransaction:
         t.rowconfigure(0, weight=1)
 
         # Button Setup
-        ttk.Label(self.transactionEditFrame, text="Enter Transaction type:").pack()
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction type:").grid(column=1, row=1, sticky=W)
         self.transType = StringVar()
         typeEntry = OptionMenu(self.transactionEditFrame, self.transType, "Buy", "Sell")
-        typeEntry.pack()
+        typeEntry.grid(column=2, row=1, sticky=(W, E))
 
-        ttk.Label(self.transactionEditFrame, text="Enter Transaction ticker:").pack()
+        ttk.Label(self.transactionEditFrame, text="Enter Transaction ticker:").grid(column=1, row=2, sticky=W)
         self.transTicker = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transTicker)
-        typeEntry.pack()
+        typeEntry.grid(column=2, row=2, sticky=(W, E))
 
-        ttk.Label(self.transactionEditFrame, text="Enter Number of units:").pack()
+        ttk.Label(self.transactionEditFrame, text="Enter Number of units:").grid(column=1, row=3, sticky=W)
         self.transUnits = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transUnits)
-        typeEntry.pack()
+        typeEntry.grid(column=2, row=3, sticky=(W, E))
 
-        ttk.Label(self.transactionEditFrame, text="Enter the price per unit:").pack()
+        ttk.Label(self.transactionEditFrame, text="Enter the price per unit:").grid(column=1, row=4, sticky=W)
         self.transPrice = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transPrice)
-        typeEntry.pack()
+        typeEntry.grid(column=2, row=4, sticky=(W, E))
 
-        ttk.Label(self.transactionEditFrame, text="Enter the data of the transaction:").pack()
+        ttk.Label(self.transactionEditFrame, text="Enter the data of the transaction:").grid(column=1, row=5, sticky=W)
         self.transDate = StringVar()
         typeEntry = ttk.Entry(self.transactionEditFrame, width=7, textvariable=self.transDate)
-        typeEntry.pack()
+        typeEntry.grid(column=2, row=5, sticky=(W, E))
 
-        ttk.Button(self.transactionEditFrame, text="Enter transaction", command=self.enterTransaction).pack()
+        ttk.Button(self.transactionEditFrame, text="Enter transaction", command=self.enterTransaction).grid(column=2, row=6, sticky=W)
         # Dataframe Setup
         self.transDf = self.getTransDf()
         self.PortfolioDf = self.getPortfolioDf()
 
-        tableframe = Frame(self.transactionEditFrame)
-        tableframe.pack()
-        pt = Table(tableframe, dataframe=self.transDf,
-                   showtoolbar=True, showstatusbar=True)
+        tableframe = Frame(self.transactionEditFrame, width=150)
+        tableframe.grid(row=3, column=7, sticky='nesw')
 
-        # pt.showIndex()
-        pt.show()
+        table = Table(tableframe, dataframe=self.transDf)
+        table.show()
 
     def getPortfolioDf(self):
         if os.path.exists('user_portfolio.csv'):

@@ -22,6 +22,7 @@ Stock Evaluation
 Trasaction Tracking
 
 * Display current postfolio along with transaction list
+* Check inputs
 
 Portfolio Evaluation
 * Include more metrics

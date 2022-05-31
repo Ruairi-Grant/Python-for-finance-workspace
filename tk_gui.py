@@ -114,8 +114,8 @@ class EditTransaction:
         self.transDf = self.getTransDf()
         self.PortfolioDf = self.getPortfolioDf()
 
-        tableframe = Frame(self.transactionEditFrame, width=150)
-        tableframe.grid(row=3, column=7, sticky='nesw')
+        tableframe = Frame(self.transactionEditFrame, width=10)
+        tableframe.grid(row=0, column=1, columnspan=2, sticky=W)
 
         table = Table(tableframe, dataframe=self.transDf)
         table.show()
